@@ -55,21 +55,18 @@ For CRISPR-Cpf1 system, the `'Note'` must contain `'crRNA'` label.
 - **File3**: NGS group information  
 ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) <font color=red>*note*:</font> At present, two repeats are supported<br>
 *example*:</br>
-[group information](https://github.com/zhangtaolab/CRISPRMatch/tree/master/sample_test/group_info.csv)  
+[group information](https://github.com/zhangtaolab/CRISPRMatchGUI/tree/master/sample_test/group_info.csv)  
 - **Note**: the information files `File1`, `File2` and `File3` are required!  
 </br>
-2. Video example:</br>
+2. Video manual:</br>
 
-> Link:https://v.youku.com/v_show/id_XMzgwODc4ODQ2NA==.html?spm=a2h3j.8428770.3416059.1
+- Link: https://v.youku.com/v_show/id_XMzgwODc4ODQ2NA==.html?spm=a2h3j.8428770.3416059.1
 
-```diff
-- Note: absolute path is preferred when using customer data
-```
+
 3. Merge paired-end reads:</br>
 ```
 $ cd /home/software/CRISPRMatchGUI/
 $ python3 /home/software/CRISPRMatchGUI/merge.py
 ```
-```diff
-- Note: absolute path is preferred when using customer data
-```
+- *example*:<br/>
+[paired-end reads](https://github.com/zhangtaolab/CRISPRMatchGUI/tree/master/merge_sample/)  
