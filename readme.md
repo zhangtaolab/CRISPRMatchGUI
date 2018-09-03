@@ -1,6 +1,6 @@
 # CRISPRMatchGUI
 ## Brief introduction
-An automatic calculation and visualization tool for high-throughput CRISPR genome-editing data analysis
+The Graphical User Interface(GUI) for CRISPRMatch--An automatic calculation and visualization tool for high-throughput CRISPR genome-editing data analysis
 ## I. <u>Requirements</u>
 Anaconda</br>
 python3</br>
