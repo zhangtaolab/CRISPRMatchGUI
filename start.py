@@ -17,7 +17,7 @@ from crisprmatch_running import mainprogram
 
 from subprocess import Popen
 from subprocess import PIPE
-from CRISPRMatch import main as startrunning
+# from CRISPRMatch import main as startrunning
 
 path = os.getcwd()
 qtCreatorFile = os.path.join(path,'CMlib/start.ui')  # Aquí va el nombre de tu archivo
@@ -135,6 +135,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         if filePath3 != "":
             print("Direction", filePath3)  # Opcional imprimir la dirección del archivo
             self.dfgroup = pd.read_csv(str(filePath3))
+
+
+            stripstr = lambda x: x.strip() if isinstance(x, str) else x  ##去除前后空格
+            self.dfgroup = self.dfgroup.applymap(stripstr)
+
+
             tmp = ' '.join(['load gene file:', filePath3, ';\n'])
             self.prosstext += tmp
             self.processinfo.setText(self.prosstext)

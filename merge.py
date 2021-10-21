@@ -63,7 +63,7 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
                     self.showMessageBox("warning","Please input flash directory")
                 else:
                     flashbin=flashpath[0]
-                    flashcmd = ' '.join([flashbin, '-o', outname, '-t', str(threadnumber), '-d', self.outputfiledir, self.leftfastq, self.rightfastq, '2>&1 | tee', self.outputfiledir + outname + '_flash.log'])
+                    flashcmd = ' '.join([flashbin, '-o', outname, '-t', str(threadnumber), '-d', self.outputfiledir, self.leftfastq, self.rightfastq, '2>&1 | tee', os.path.join(self.outputfiledir, outname + '_flash.log')])
                     print(flashcmd)
                     runflash = Popen(flashcmd, shell=True)
                     runflash.communicate()

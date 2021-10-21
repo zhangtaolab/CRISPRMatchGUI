@@ -609,6 +609,7 @@ def showbarprocess(content):
     progress = QProgressDialog()
     progress.setWindowTitle("Processing ...")
     progress.setLabelText(content)
+    progress.setCancelButton(None)  ##不显示cancel button
     #progress.setCancelButtonText("")
     progress.setMinimumDuration(5)
     progress.setWindowModality(Qt.WindowModal)
@@ -618,6 +619,8 @@ def showbarprocess(content):
 
     else:
         progress.setValue(num)
+
+    progress.cancel()
 
         # QtWidgets.QMessageBox.information(self, "提示", "操作成功")
         # self.showbarprocess()
