@@ -61,7 +61,7 @@ For CRISPR-Cpf1 system, the `'Note'` must contain `'crRNA'` label.
 2. Video manual:</br>
 
 - Link: https://v.youku.com/v_show/id_XMzgwODc4ODQ2NA==.html?spm=a2h3j.8428770.3416059.1
-
+</br>
 
 3. Merge paired-end reads:</br>
 ```
@@ -70,3 +70,9 @@ $ python3 /home/software/CRISPRMatchGUI/merge.py
 ```
 - *example*:<br/>
 [paired-end reads](https://github.com/zhangtaolab/CRISPRMatchGUI/tree/master/merge_sample/)  
+</br>
+
+4. Split sequencing file:</br>
+```
+$ cd /home/software/CRISPRMatchGUI/
+$ python3 /home/software/CRISPRMatchGUI/split.py
