@@ -1,2 +1,2 @@
-group,rep1,rep2,control,gene,strand,start,end
-AsCpf1-OsPDS-crRNA01,AsCpf1-OsPDS-TTTG-crRNA01_rep1,AsCpf1-OsPDS-TTTG-crRNA01_rep2,AsCpf1-OsPDS-TTTG-crRNA01_ck,OsPDS,+,136,162
+group,rep1,rep2,rep3,control,gene,strand,start,end
+AsCpf1-OsPDS-crRNA01,AsCpf1-OsPDS-TTTG-crRNA01_rep1,AsCpf1-OsPDS-TTTG-crRNA01_rep2,AsCpf1-OsPDS-TTTG-crRNA01_rep3,AsCpf1-OsPDS-TTTG-crRNA01_ck,OsPDS,+,136,162

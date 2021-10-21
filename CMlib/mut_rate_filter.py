@@ -10,6 +10,7 @@ import re
 from glob import glob
 from matplotlib.ticker import FormatStrFormatter
 from CMlib.showprocess import showbarprocess
+from PyQt5 import QtWidgets
 
 def rate_cal_filter(infofile, groupinfo, refname, output, bamdir):
     """
@@ -33,6 +34,7 @@ def rate_cal_filter(infofile, groupinfo, refname, output, bamdir):
     for idy in groupinfor.index:
         stranddict[groupinfor.loc[idy].rep1] = groupinfor.loc[idy].strand
         stranddict[groupinfor.loc[idy].rep2] = groupinfor.loc[idy].strand
+        stranddict[groupinfor.loc[idy].rep3] = groupinfor.loc[idy].strand
         stranddict[groupinfor.loc[idy].control] = groupinfor.loc[idy].strand
 
     outputname = os.path.join(output, 'mut_rate.all.txt')
@@ -48,13 +50,21 @@ def rate_cal_filter(infofile, groupinfo, refname, output, bamdir):
 
     for idx in info.index:
         #    print(info.loc[idx].Note, info.loc[idx].gene_name, info.loc[idx].start, info.loc[idx].end)
-        bamname =  os.path.join(bamdir, info.loc[idx].Note+'.bam')
-        print("Calculating",bamname)
-        tmp = ' '.join(['Calculating',info.loc[idx].Note])
-        showbarprocess(tmp)
 
         note = info.loc[idx].Note
+
+        if note not in stranddict:
+            error = ' '.join([note, 'is not involved in group table! Please Check!'])
+            showwarnings("Error", error)
+            continue
+
+
+        bamname =  os.path.join(bamdir, info.loc[idx].Note+'.bam')
+        print("Calculating",bamname)
         strand = stranddict[note]
+
+        tmp = ' '.join(['Calculating', info.loc[idx].Note])
+        showbarprocess(tmp)
 
 
         if (re.search("gRNA", info.loc[idx].Note)):  ##5'端延伸10，3'端延伸10
@@ -274,8 +284,9 @@ def display_filter(groupinfo, output):
     for idy in groupinfor.index:
         rep1 = groupinfor.loc[idy].rep1
         rep2 = groupinfor.loc[idy].rep2
+        rep3 = groupinfor.loc[idy].rep3
         ck = groupinfor.loc[idy].control
-        if (mut_result.__contains__(rep1) and mut_result.__contains__(rep2)):
+        if (mut_result.__contains__(rep1) and mut_result.__contains__(rep2) and mut_result.__contains__(rep3)):
 
             # replace_mean = np.mean([mut_result[rep1][2], mut_result[rep2][2]])  ##np.mean([1,2,3,4,5])
             # #    print(group_mean)
@@ -283,29 +294,59 @@ def display_filter(groupinfo, output):
             # replace_std = np.std([mut_result[rep1][2], mut_result[rep2][2]])  ## 标准差
             # #    print("std", group_var)
             # replace_yerr.append(replace_std)
-            mutation_mean = np.mean([mut_result[rep1][1], mut_result[rep2][1]])  ##np.mean([1,2,3,4,5])
+            mutation_mean = np.mean([mut_result[rep1][1], mut_result[rep2][1], mut_result[rep3][1]])  ##np.mean([1,2,3,4,5])
             #    print(group_mean)
             mutation.append(mutation_mean)
-            mutation_std = np.std([mut_result[rep1][1], mut_result[rep2][1]])  ## 标准差
+            mutation_std = np.std([mut_result[rep1][1], mut_result[rep2][1], mut_result[rep3][1]])  ## 标准差
             #    print("std", group_var)
             mutation_yerr.append(mutation_std)
 
-            insertO_mean = np.mean([mut_result[rep1][3], mut_result[rep2][3]])
+            insertO_mean = np.mean([mut_result[rep1][3], mut_result[rep2][3], mut_result[rep3][3]])
             insertO.append(insertO_mean)
-            insertO_std = np.std([mut_result[rep1][3], mut_result[rep2][3]])
+            insertO_std = np.std([mut_result[rep1][3], mut_result[rep2][3], mut_result[rep3][3]])
             insertO_yerr.append(insertO_std)
 
-            deletionO_mean = np.mean([mut_result[rep1][4], mut_result[rep2][4]])
+            deletionO_mean = np.mean([mut_result[rep1][4], mut_result[rep2][4], mut_result[rep3][4]])
             deletionO.append(deletionO_mean)
-            deletionO_std = np.std([mut_result[rep1][4], mut_result[rep2][4]])
+            deletionO_std = np.std([mut_result[rep1][4], mut_result[rep2][4], mut_result[rep3][4]])
             deletionO_yerr.append(deletionO_std)
 
-            insert_deletion_mean = np.mean([mut_result[rep1][5], mut_result[rep2][5]])
+            insert_deletion_mean = np.mean([mut_result[rep1][5], mut_result[rep2][5], mut_result[rep3][5]])
             insert_deletion.append(insert_deletion_mean)
-            insert_deletion_std = np.std([mut_result[rep1][5], mut_result[rep2][5]])
+            insert_deletion_std = np.std([mut_result[rep1][5], mut_result[rep2][5], mut_result[rep3][5]])
             insert_deletion_yerr.append(insert_deletion_std)
-        elif mut_result.__contains__(rep1):
+        elif mut_result.__contains__(rep1) and mut_result.__contains__(rep2):
+            print("The group:",groupinfor.loc[idy].group, ": Rep3 is missing.")
+            mutation.append(np.mean([mut_result[rep1][1],mut_result[rep2][1]]))
+            mutation_yerr.append(np.std([mut_result[rep1][1],mut_result[rep2][1]]))
+            insertO.append(np.mean([mut_result[rep1][3],mut_result[rep2][3]]))
+            insertO_yerr.append(np.std([mut_result[rep1][3],mut_result[rep2][3]]))
+            deletionO.append(np.mean([mut_result[rep1][4],mut_result[rep2][4]]))
+            deletionO_yerr.append(np.std([mut_result[rep1][4],mut_result[rep2][4]]))
+            insert_deletion.append(np.mean([mut_result[rep1][5],mut_result[rep2][5]]))
+            insert_deletion_yerr.append(np.std([mut_result[rep1][5],mut_result[rep2][5]]))
+        elif mut_result.__contains__(rep1) and mut_result.__contains__(rep3):
             print("The group:",groupinfor.loc[idy].group, ": Rep2 is missing.")
+            mutation.append(np.mean([mut_result[rep1][1],mut_result[rep3][1]]))
+            mutation_yerr.append(np.std([mut_result[rep1][1],mut_result[rep3][1]]))
+            insertO.append(np.mean([mut_result[rep1][3],mut_result[rep3][3]]))
+            insertO_yerr.append(np.std([mut_result[rep1][3],mut_result[rep3][3]]))
+            deletionO.append(np.mean([mut_result[rep1][4],mut_result[rep3][4]]))
+            deletionO_yerr.append(np.std([mut_result[rep1][4],mut_result[rep3][4]]))
+            insert_deletion.append(np.mean([mut_result[rep1][5],mut_result[rep3][5]]))
+            insert_deletion_yerr.append(np.std([mut_result[rep1][5],mut_result[rep3][5]]))
+        elif mut_result.__contains__(rep2) and mut_result.__contains__(rep3):
+            print("The group:",groupinfor.loc[idy].group, ": Rep1 is missing.")
+            mutation.append(np.mean([mut_result[rep2][1],mut_result[rep3][1]]))
+            mutation_yerr.append(np.std([mut_result[rep2][1],mut_result[rep3][1]]))
+            insertO.append(np.mean([mut_result[rep2][3],mut_result[rep3][3]]))
+            insertO_yerr.append(np.std([mut_result[rep2][3],mut_result[rep3][3]]))
+            deletionO.append(np.mean([mut_result[rep2][4],mut_result[rep3][4]]))
+            deletionO_yerr.append(np.std([mut_result[rep2][4],mut_result[rep3][4]]))
+            insert_deletion.append(np.mean([mut_result[rep2][5],mut_result[rep3][5]]))
+            insert_deletion_yerr.append(np.std([mut_result[rep2][5],mut_result[rep3][5]]))
+        elif mut_result.__contains__(rep1):
+            print("The group:",groupinfor.loc[idy].group, ": Rep2 and Rep3 are missing.")
             mutation.append(mut_result[rep1][1])
             mutation_yerr.append(0)
             insertO.append(mut_result[rep1][3])
@@ -315,7 +356,7 @@ def display_filter(groupinfo, output):
             insert_deletion.append(mut_result[rep1][5])
             insert_deletion_yerr.append(0)
         elif mut_result.__contains__(rep2):
-            print("The group:", groupinfor.loc[idy].group, ": Rep1 is missing.")
+            print("The group:",groupinfor.loc[idy].group, ": Rep1 and Rep3 are missing.")
             mutation.append(mut_result[rep2][1])
             mutation_yerr.append(0)
             insertO.append(mut_result[rep2][3])
@@ -323,6 +364,16 @@ def display_filter(groupinfo, output):
             deletionO.append(mut_result[rep2][4])
             deletionO_yerr.append(0)
             insert_deletion.append(mut_result[rep2][5])
+            insert_deletion_yerr.append(0)
+        elif mut_result.__contains__(rep3):
+            print("The group:",groupinfor.loc[idy].group, ": Rep1 and Rep2 are missing.")
+            mutation.append(mut_result[rep3][1])
+            mutation_yerr.append(0)
+            insertO.append(mut_result[rep3][3])
+            insertO_yerr.append(0)
+            deletionO.append(mut_result[rep3][4])
+            deletionO_yerr.append(0)
+            insert_deletion.append(mut_result[rep3][5])
             insert_deletion_yerr.append(0)
         else:
             print("All repetitions in group:", groupinfor.loc[idy].group, " is missing.")
@@ -396,3 +447,12 @@ def display_filter(groupinfo, output):
     plt.close(fig)
     ## print out pdf
 
+# ############## warning message #########
+def showwarnings(title, message):
+    wBox = QtWidgets.QMessageBox()
+    wBox.setIcon(QtWidgets.QMessageBox.Warning)
+    wBox.setWindowTitle(title)
+    wBox.setText(message)
+    wBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    wBox.exec_()
+##################################################

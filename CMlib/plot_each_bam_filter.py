@@ -7,6 +7,7 @@ import re
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from PyQt5 import QtWidgets
 
 
 
@@ -104,10 +105,17 @@ def barchart_filter(infofile,groupinfo,refname, output, bamdir):
     for idy in groupinfor.index:
         stranddict[groupinfor.loc[idy].rep1] = groupinfor.loc[idy].strand
         stranddict[groupinfor.loc[idy].rep2] = groupinfor.loc[idy].strand
+        stranddict[groupinfor.loc[idy].rep3] = groupinfor.loc[idy].strand
         stranddict[groupinfor.loc[idy].control] = groupinfor.loc[idy].strand
     fa = Fasta(refname)
     for idx in datainfo.index:
         note = datainfo.loc[idx].Note
+
+        if note not in stranddict:
+            error = ' '.join([note, 'is not involved in group table! Please Check!'])
+            showwarnings("Error", error)
+            continue
+
         strand = stranddict[note]
         type = ''
         if (re.search("gRNA", datainfo.loc[idx].Note)):
@@ -223,8 +231,9 @@ def barchart_filter(infofile,groupinfo,refname, output, bamdir):
 
 
         ####output cvs in tmpfile
+        ratio_final=list(y)  #直接饮用y不会按照方向，必须调整成list才可以
         reg['label'] = seqlistother ##合并X横坐标到reg 框架中
-        reg['ratio'] = y
+        reg['ratio'] = ratio_final
         reg.to_csv(graphcsv,index=True, index_label="Index")
         regPAM['label'] = seqlistPAM
         regPAM.to_csv(pamcsv,index=True, index_label="Index")
@@ -249,3 +258,14 @@ def DNA_complement(sequence):
 def DNA_reverse(sequence):
     sequence = sequence.upper()
     return sequence[::-1]
+
+
+# ############## warning message #########
+def showwarnings(title, message):
+    wBox = QtWidgets.QMessageBox()
+    wBox.setIcon(QtWidgets.QMessageBox.Warning)
+    wBox.setWindowTitle(title)
+    wBox.setText(message)
+    wBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    wBox.exec_()
+##################################################

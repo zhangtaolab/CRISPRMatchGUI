@@ -74,14 +74,15 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
         #############################################
 
         # #######group table result#################
-        self.groupdf = groupinfo
+        self.groupdf = groupinfo.fillna("None") ##填充表格中NaN处
+        # groupinfor = groupinfor.fillna("UNKNOWN")  ##填充表格中NaN处
         rown = len(self.groupdf.index)
         coln = len(self.groupdf.columns)
-        self.modelgrp = QStandardItemModel(rown, 8)
+        self.modelgrp = QStandardItemModel(rown, 9)
         # labels = list(self.df.columns.values)
         # rown=len(self.df.index)
         # self.model = QStandardItemModel(rown,9)
-        labels = ['group','rep1','rep2','control','gene','strand','Del Ratio','Del Size']
+        labels = ['group','rep1','rep2','rep3','control','gene','strand','Del Ratio','Del Size']
         self.modelgrp.setHorizontalHeaderLabels(labels)
         # self.tableView.resize(500,300)
         # 下面代码让表格100填满窗口
@@ -90,19 +91,20 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
         self.tableView_grp.setModel(self.modelgrp)
         for row in range(rown):
             # print(self.df.loc[row].Sample)
-            for column in range(6):
+            for column in range(7):
                 item = QStandardItem(str(self.groupdf.loc[row][labels[column]]))
                 self.modelgrp.setItem(row, column, item)
             groupname = self.groupdf.loc[row].group
             rep1 = self.groupdf.loc[row].rep1
             rep2 = self.groupdf.loc[row].rep2
+            rep3 = self.groupdf.loc[row].rep3
             ck = self.groupdf.loc[row].control
             strand = self.groupdf.loc[row].strand
             # start = self.df.loc[row].start
             # end = self.df.loc[row].end
             # genename = self.df.loc[row].gene_name
-            self.tableView_grp.setIndexWidget(self.tableView_grp.model().index(row, 6), self.pushbutton_grp("gr%sc%s" % (row, 6), "ratio", groupname,rep1,rep2,ck,strand))
-            self.tableView_grp.setIndexWidget(self.tableView_grp.model().index(row, 7), self.pushbutton_grp("gr%sc%s" % (row, 7), "size",groupname,rep1,rep2,ck,strand))
+            self.tableView_grp.setIndexWidget(self.tableView_grp.model().index(row, 7), self.pushbutton_grp("gr%sc%s" % (row, 7), "ratio", groupname,rep1,rep2,rep3,ck,strand))
+            self.tableView_grp.setIndexWidget(self.tableView_grp.model().index(row, 8), self.pushbutton_grp("gr%sc%s" % (row, 8), "size",groupname,rep1,rep2,rep3,ck,strand))
         #############################################
 
 
@@ -131,18 +133,18 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
         # self.content.clicked.connect(lambda: self.deletion_ratio(sample))
         return self.content
 
-    def pushbutton_grp(self,gcontent,action, groupname,rep1,rep2,ck,strand):
+    def pushbutton_grp(self,gcontent,action, groupname,rep1,rep2,rep3,ck,strand):
         self.gcontent = QPushButton()
         self.gcontent.setText("Show")
 
         if action == "ratio":
-            self.gcontent.clicked.connect(lambda: self.deletion_group_ratio(groupname,rep1,rep2,ck))
+            self.gcontent.clicked.connect(lambda: self.deletion_group_ratio(groupname,rep1,rep2,rep3,ck))
             # pyqt信号和槽传递额外参数
             # 使用个who变量，结果不正常，显示 False is pressed
             # but.clicked.connect(lambda who="5": self.on_click(who))
 
         if action == "size":
-            self.gcontent.clicked.connect(lambda: self.deletion_size(groupname,rep1,rep2,ck))
+            self.gcontent.clicked.connect(lambda: self.deletion_size(groupname))
 
         # self.content.clicked.connect(lambda: self.deletion_ratio(sample))
         return self.gcontent
@@ -158,7 +160,8 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
         if path.exists(graphcsv):
 
             reg=pd.read_csv(graphcsv,index_col="Index")
-            reg = reg.fillna(" ")  ##填充表格中NaN处
+
+            # reg = reg.fillna("None")  ##填充表格中NaN处
             regPAM = pd.read_csv(pamcsv,index_col="Index")
 
             #####plot deletion ratio
@@ -186,17 +189,49 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
             text= sample + "does not exist!"
             self.showwarnings("warning",text)
 
-    def deletion_group_ratio(self,groupname,rep1,rep2,ck):
+    def deletion_group_ratio(self,groupname,rep1,rep2,rep3,ck):
         print(groupname)
         rep1csv = os.path.join(self.outputtmp, rep1 + '.graph.csv')
         rep2csv = os.path.join(self.outputtmp, rep2 + '.graph.csv')
+        rep3csv = os.path.join(self.outputtmp, rep3 + '.graph.csv')
         ckcsv = os.path.join(self.outputtmp, ck + '.graph.csv')
         pam1csv = os.path.join(self.outputtmp, rep1 + '.pam.csv')
         pam2csv = os.path.join(self.outputtmp, rep2 + '.pam.csv')
+        pam3csv = os.path.join(self.outputtmp, rep3 + '.pam.csv')
         pamckcsv = os.path.join(self.outputtmp, ck + '.pam.csv')
-        if (path.exists(rep1csv) and path.exists(rep2csv)):
+        if (path.exists(rep1csv) and path.exists(rep2csv) and path.exists(rep3csv)):
 
             #print(repbam1, repbam2, ckbam, start, end, genename, namenow)
+            print("There are three repeats!")
+
+            rep1reg = pd.read_csv(rep1csv, index_col="Index")
+            rep2reg = pd.read_csv(rep2csv, index_col="Index")
+            rep3reg = pd.read_csv(rep3csv, index_col="Index")
+
+            reg = pd.concat([rep1reg.ratio,rep2reg.ratio,rep3reg.ratio], axis=1)
+            regmean = reg.mean(axis=1)
+            stdrr = reg.sem(axis=1)
+            glabels = list(rep1reg.fillna(" ").label) ##填充表格中NaN处
+
+            regPAM = pd.read_csv(pam1csv, index_col="Index")
+
+            if path.exists(ckcsv):
+                regck = pd.read_csv(ckcsv, index_col="Index")
+                ckname = groupname + ' Control'
+                y_ck = regck.ratio
+            else:
+                ckname = groupname + ' Contron_Unknown'
+                regck = regmean
+                y_ck = regmean - regmean
+
+            #####plot deletion group ratio
+            figures = Window()
+            figures.deletion_group_ratio(groupname,regmean,stdrr,glabels,regPAM,regck,y_ck,ckname)
+            figures.show()
+        elif (path.exists(rep1csv) and path.exists(rep2csv)):
+
+            #print(repbam1, repbam2, ckbam, start, end, genename, namenow)
+            print("Rep3 is missing!")
 
             rep1reg = pd.read_csv(rep1csv, index_col="Index")
             rep2reg = pd.read_csv(rep2csv, index_col="Index")
@@ -208,24 +243,33 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
 
             regPAM = pd.read_csv(pam1csv, index_col="Index")
 
-            # fig, (ax0, ax1) = plt.subplots(ncols=2, sharey=True, figsize=(16, 6))
-            # # ax0.bar(regmean.index, regmean, yerr=stdrr)
-            # y = regmean
-            # y_std = stdrr
-            # ax0.bar(regmean.index, y, color='purple')
-            # # add errorbar, elinewidth：errorbar line with; capsize/capthick:上下横线长短／粗细，ls:linestyle='None'去掉连接线。 ecolor: errorbar line color
-            # ax0.errorbar(regmean.index, y, yerr=y_std, fmt='', elinewidth=0.5, capsize=2, capthick=0.5, ls='None',
-            #              ecolor='black')
-            # ax0.set_title(groupname,fontdict = {'family': 'Times New Roman'}, size = 15)
-            #
-            # ax0.set_xticks(regmean.index, minor=True)
-            # ax0.set_xticklabels(glabels, color="black", minor=True, fontdict = {'family': 'Arial','weight' : 'bold'}, size = 12)  # minor=True表示次坐标轴
-            # ax0.set_xticks(regPAM.index)
-            # ax0.set_xticklabels(regPAM.label, color="red", fontdict = {'family': 'Arial','weight' : 'bold'}, size = 12)
-            #
-            # ax0.set_ylabel('Deletion Ratio', fontdict={'family': 'Times New Roman'}, size=15)
+            if path.exists(ckcsv):
+                regck = pd.read_csv(ckcsv, index_col="Index")
+                ckname = groupname + ' Control'
+                y_ck = regck.ratio
+            else:
+                ckname = groupname + ' Contron_Unknown'
+                regck = regmean
+                y_ck = regmean - regmean
 
+            #####plot deletion group ratio
+            figures = Window()
+            figures.deletion_group_ratio(groupname,regmean,stdrr,glabels,regPAM,regck,y_ck,ckname)
+            figures.show()
+        elif (path.exists(rep1csv) and path.exists(rep3csv)):
+            print("Rep2 is missing!")
 
+            #print(repbam1, repbam2, ckbam, start, end, genename, namenow)
+
+            rep1reg = pd.read_csv(rep1csv, index_col="Index")
+            rep3reg = pd.read_csv(rep3csv, index_col="Index")
+
+            reg = pd.concat([rep1reg.ratio,rep3reg.ratio], axis=1)
+            regmean = reg.mean(axis=1)
+            stdrr = reg.sem(axis=1)
+            glabels = list(rep1reg.fillna(" ").label) ##填充表格中NaN处
+
+            regPAM = pd.read_csv(pam1csv, index_col="Index")
 
             if path.exists(ckcsv):
                 regck = pd.read_csv(ckcsv, index_col="Index")
@@ -235,15 +279,118 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
                 ckname = groupname + ' Contron_Unknown'
                 regck = regmean
                 y_ck = regmean - regmean
-            # ax1.bar(regck.index, y_ck, color='grey')
-            # ax1.set_title(ckname,fontdict = {'family': 'Times New Roman'}, size = 15)
-            # ax1.set_xticks(regck.index,minor=True)
-            # ax1.set_xticklabels(glabels, color="black", minor=True, fontdict = {'family': 'Arial','weight' : 'bold'}, size = 12)
-            # ax1.set_xticks(regPAM.index)
-            # ax1.set_xticklabels(regPAM.label, color="red", fontdict = {'family': 'Arial','weight' : 'bold'}, size = 12)
-            #
-            #
-            # plt.show()
+
+            #####plot deletion group ratio
+            figures = Window()
+            figures.deletion_group_ratio(groupname,regmean,stdrr,glabels,regPAM,regck,y_ck,ckname)
+            figures.show()
+        elif (path.exists(rep2csv) and path.exists(rep3csv)):
+
+            print("Rep1 is missing!")
+
+            #print(repbam1, repbam2, ckbam, start, end, genename, namenow)
+
+            rep2reg = pd.read_csv(rep2csv, index_col="Index")
+            rep3reg = pd.read_csv(rep3csv, index_col="Index")
+
+            reg = pd.concat([rep2reg.ratio,rep3reg.ratio], axis=1)
+            regmean = reg.mean(axis=1)
+            stdrr = reg.sem(axis=1)
+            glabels = list(rep2reg.fillna(" ").label) ##填充表格中NaN处
+
+            regPAM = pd.read_csv(pam2csv, index_col="Index")
+
+            if path.exists(ckcsv):
+                regck = pd.read_csv(ckcsv, index_col="Index")
+                ckname = groupname + ' Control'
+                y_ck = regck.ratio
+            else:
+                ckname = groupname + ' Contron_Unknown'
+                regck = regmean
+                y_ck = regmean - regmean
+
+            #####plot deletion group ratio
+            figures = Window()
+            figures.deletion_group_ratio(groupname,regmean,stdrr,glabels,regPAM,regck,y_ck,ckname)
+            figures.show()
+        elif path.exists(rep1csv):
+
+            #print(repbam1, repbam2, ckbam, start, end, genename, namenow)
+            print("Rep2 and Rep3 are missing!")
+
+            rep1reg = pd.read_csv(rep1csv, index_col="Index")
+
+            reg = pd.concat([rep1reg.ratio], axis=1)
+            regmean = reg.mean(axis=1)
+            stdrr = reg.sem(axis=1)
+            glabels = list(rep1reg.fillna(" ").label) ##填充表格中NaN处
+
+            regPAM = pd.read_csv(pam1csv, index_col="Index")
+
+            if path.exists(ckcsv):
+                regck = pd.read_csv(ckcsv, index_col="Index")
+                ckname = groupname + ' Control'
+                y_ck = regck.ratio
+            else:
+                ckname = groupname + ' Contron_Unknown'
+                regck = regmean
+                y_ck = regmean - regmean
+
+            #####plot deletion group ratio
+            figures = Window()
+            figures.deletion_group_ratio(groupname,regmean,stdrr,glabels,regPAM,regck,y_ck,ckname)
+            figures.show()
+        elif path.exists(rep2csv):
+
+            print("Rep1 and Rep3 are missing!")
+
+            #print(repbam1, repbam2, ckbam, start, end, genename, namenow)
+
+            rep2reg = pd.read_csv(rep2csv, index_col="Index")
+
+            reg = pd.concat([rep2reg.ratio], axis=1)
+            regmean = reg.mean(axis=1)
+            stdrr = reg.sem(axis=1)
+            glabels = list(rep2reg.fillna(" ").label) ##填充表格中NaN处
+
+            regPAM = pd.read_csv(pam1csv, index_col="Index")
+
+            if path.exists(ckcsv):
+                regck = pd.read_csv(ckcsv, index_col="Index")
+                ckname = groupname + ' Control'
+                y_ck = regck.ratio
+            else:
+                ckname = groupname + ' Contron_Unknown'
+                regck = regmean
+                y_ck = regmean - regmean
+
+            #####plot deletion group ratio
+            figures = Window()
+            figures.deletion_group_ratio(groupname,regmean,stdrr,glabels,regPAM,regck,y_ck,ckname)
+            figures.show()
+        elif path.exists(rep3csv):
+
+            print("Rep1 and Rep2 are missing!")
+
+            #print(repbam1, repbam2, ckbam, start, end, genename, namenow)
+
+            rep3reg = pd.read_csv(rep3csv, index_col="Index")
+
+            reg = pd.concat([rep3reg.ratio], axis=1)
+            regmean = reg.mean(axis=1)
+            stdrr = reg.sem(axis=1)
+            glabels = list(rep3reg.fillna(" ").label) ##填充表格中NaN处
+
+            regPAM = pd.read_csv(pam3csv, index_col="Index")
+
+            if path.exists(ckcsv):
+                regck = pd.read_csv(ckcsv, index_col="Index")
+                ckname = groupname + ' Control'
+                y_ck = regck.ratio
+            else:
+                ckname = groupname + ' Contron_Unknown'
+                regck = regmean
+                y_ck = regmean - regmean
 
             #####plot deletion group ratio
             figures = Window()
@@ -256,7 +403,7 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
 
 
 
-    def deletion_size(self,groupname,rep1,rep2,ck):
+    def deletion_size(self,groupname):
         print(groupname)
         csvname = os.path.join(self.resulttmp, groupname + '_deletion_size.csv')
         if path.exists(csvname):
@@ -295,7 +442,7 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
         pdffile = os.path.join(self.resulttmp, sample + '_del_aln.pdf')
 
         #print("start output", alnfile, "figure")
-        if os.path.getsize(delfile):  ## check aln file
+        if path.exists(delfile) and os.path.getsize(delfile):  ## check aln file
             print("start output", delfile, "figure")
             tmp = 'Plot '+sample+'_del_aln.pdf'
             showbarprocess(tmp)
@@ -369,7 +516,7 @@ class showtable(QtWidgets.QDialog, Ui_showtable):
         pdffile = os.path.join(self.resulttmp, sample + '_snp_aln.pdf')
 
         #print("start output", alnfile, "figure")
-        if os.path.getsize(delfile):  ## check aln file
+        if path.exists(delfile) and os.path.getsize(delfile):  ## check aln file
             print("start output", delfile, "figure")
 
             tmp = 'Plot ' + sample + '_snp_aln.pdf'

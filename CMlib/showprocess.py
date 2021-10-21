@@ -6,6 +6,7 @@ def showbarprocess(content):
     progress = QProgressDialog()
     progress.setWindowTitle("Please waiting")
     progress.setLabelText(content)
+    progress.setCancelButton(None)  ##不显示cancel button
     #progress.setCancelButtonText("")
     progress.setMinimumDuration(5)
     progress.setWindowModality(Qt.WindowModal)

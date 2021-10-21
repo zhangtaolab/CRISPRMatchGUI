@@ -34,13 +34,15 @@ class Changecolor(QtWidgets.QDialog):
         self.layout.addWidget(self.toolbar)
         self.layout.addWidget(self.canvas)
 
+        glabels = list(reg.fillna(" ").label)
+
         self.ax = self.figure.add_subplot(111)
         self.ax.bar(reg.index, reg.ratio, color =self.color.name())
         self.ax.set_title(sample,fontdict = {'family': 'Arial'}, size = 15)
         # print(self.seqlistother)
         # print(self.seqlistother[1])
         self.ax.set_xticks(reg.index,minor=True)
-        self.ax.set_xticklabels(list(reg.label), color="black", minor=True, fontdict = {'family': 'Arial','weight' : 'bold'}, size = 12)  # minor=True表示次坐标轴
+        self.ax.set_xticklabels(glabels, color="black", minor=True, fontdict = {'family': 'Arial','weight' : 'bold'}, size = 12)  # minor=True表示次坐标轴
         self.ax.set_xticks(regPAM.index)
         self.ax.set_xticklabels(regPAM.label, color="red", fontdict = {'family': 'Arial','weight' : 'bold'}, size = 12)
         plt.ylabel('Deletion Ratio', fontdict = {'family': 'Arial'}, size = 15)

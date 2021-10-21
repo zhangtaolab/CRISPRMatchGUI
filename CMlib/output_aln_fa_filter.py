@@ -9,6 +9,7 @@ import numpy as np
 import re
 from glob import glob
 from CMlib.showprocess import showbarprocess
+from PyQt5 import QtWidgets
 
 def alnfile_filter(infofile,groupinfo, refname, output, bamdir):
     """
@@ -29,9 +30,17 @@ def alnfile_filter(infofile,groupinfo, refname, output, bamdir):
     for idy in groupinfor.index:
         stranddict[groupinfor.loc[idy].rep1] = groupinfor.loc[idy].strand
         stranddict[groupinfor.loc[idy].rep2] = groupinfor.loc[idy].strand
+        stranddict[groupinfor.loc[idy].rep3] = groupinfor.loc[idy].strand
         stranddict[groupinfor.loc[idy].control] = groupinfor.loc[idy].strand
 
     for idx in info.index:
+
+        note = info.loc[idx].Note
+        if note not in stranddict:
+            error = ' '.join([note, 'is not involved in group table! Please Check!'])
+            showwarnings("Error", error)
+            continue
+
         bamname = os.path.join(bamdir, info.loc[idx].Note + '.bam')
         outfile_del = os.path.join(output, info.loc[idx].Note + '_del_aln.fa')
         outfile_snp = os.path.join(output, info.loc[idx].Note + '_snp_aln.fa')
@@ -246,3 +255,13 @@ def alnfile_filter(infofile,groupinfo, refname, output, bamdir):
         outfa_del.close()
         outlan_del.close()
     #outio.close()
+
+# ############## warning message #########
+def showwarnings(title, message):
+    wBox = QtWidgets.QMessageBox()
+    wBox.setIcon(QtWidgets.QMessageBox.Warning)
+    wBox.setWindowTitle(title)
+    wBox.setText(message)
+    wBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    wBox.exec_()
+##################################################
