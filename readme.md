@@ -76,3 +76,9 @@ $ python3 /home/software/CRISPRMatchGUI/merge.py
 ```
 $ cd /home/software/CRISPRMatchGUI/
 $ python3 /home/software/CRISPRMatchGUI/split.py
+```
+
+5. Mirroring file for Windows (supported by VirtualBox)
+- Link: https://pan.baidu.com/s/1L8KPij9SP2Mp9v7RYgS5_w 
+code: 链接：https://pan.baidu.com/s/1L8KPij9SP2Mp9v7RYgS5_w 
+提取码：CPF1
