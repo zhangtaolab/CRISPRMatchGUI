@@ -9,7 +9,7 @@ samtools</br>
 FLASH</br>
 pyqt5</br>
 
-![#f03c15] **<font color=red>Note:</font>** Using `Anaconda` to Install all packages (`bwa,samtools,picard,FLASH`) ##应用conda统一安装即可，方便快捷
+**<font color=#FF0000>Note:</font>** Using `Anaconda` to Install all packages (`bwa,samtools,picard,FLASH`) ##应用conda统一安装即可，方便快捷
 
 ## II. <u>Manually Install（手动安装，非虚拟机）</u>
 CentOS Linux release 7.3.1611 (terminal)
@@ -33,7 +33,7 @@ $ conda install bwa \             ##用\符号和回车分隔多个软件
                 argparse \  
                 numpy \
 ```
-- ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) **<font color=red>Note:</font>** To ensure the tool working, please using `Anaconda` to install all packages (`bwa,samtools,pyqt,FLASH ...`)
+**<font color=#FF0000>Note:</font>** To ensure the tool working, please using `Anaconda` to install all packages (`bwa,samtools,pyqt,FLASH ...`)
 
 3. Download CRISPRMatchGUI and test  ##下载本软件的软件包
 ```
@@ -48,7 +48,7 @@ $ python3 /home/software/CRISPRMatchGUI/start.py  ##使用python3打开软件包
 
 (1)CRISPRMatch虚拟机使用教程
 - Link: https://v.youku.com/v_show/id_XMzgwODc4ODQ2NA==.html?spm=a2h3j.8428770.3416059.1
-
+</br>
 (2)双端测序数据合并教程
 - Link: https://v.youku.com/v_show/id_XMzkzMTY5NTEwOA==.html?scm=20140719.manual.114461.video_XMzkzMTY5NTEwOA==
 
