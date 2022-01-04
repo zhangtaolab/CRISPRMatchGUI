@@ -9,7 +9,7 @@ samtools</br>
 FLASH</br>
 pyqt5</br>
 
-<font color="#FF0000">Note:</font> Using `Anaconda` to Install all packages (`bwa,samtools,picard,FLASH`) ##应用conda统一安装即可，方便快捷
+[**<font color="#FF0000">Note:</font>**] Using `Anaconda` to Install all packages (`bwa,samtools,picard,FLASH`) ##应用conda统一安装即可，方便快捷
 
 ## II. <u>Manually Install（手动安装，非虚拟机）</u>
 CentOS Linux release 7.3.1611 (terminal)
@@ -46,16 +46,16 @@ $ python3 /home/software/CRISPRMatchGUI/start.py  ##使用python3打开软件包
 ## III. <u>Start running（运行方法）</u>
 1. Video manual(用户手册)</br>
 
-  (1)CRISPRMatch虚拟机使用教程
+>(1)CRISPRMatch虚拟机使用教程
 - Link: https://v.youku.com/v_show/id_XMzgwODc4ODQ2NA==.html?spm=a2h3j.8428770.3416059.1
 
-  (2)双端测序数据合并教程
+>(2)双端测序数据合并教程
 - Link: https://v.youku.com/v_show/id_XMzkzMTY5NTEwOA==.html?scm=20140719.manual.114461.video_XMzkzMTY5NTEwOA==
 
-  (3)拆分混池测序结果(带有barcode信息)
+>(3)拆分混池测序结果(带有barcode信息)
 - Link: https://v.youku.com/v_show/id_XMzkzMTY5MzY4NA==.html?scm=20140719.manual.114461.video_XMzkzMTY5MzY4NA==
 
-  (4)虚拟机读取usb设备(改方法可实现大数据集计算)
+>(4)虚拟机读取usb设备(改方法可实现大数据集计算)
 - Link: https://v.youku.com/v_show/id_XMzk0MDgyMjA2MA==.html?scm=20140719.manual.114461.video_XMzk0MDgyMjA2MA==
 
 2. Mirroring file for Windows (虚拟机下载地址)</br>
