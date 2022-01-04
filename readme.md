@@ -15,7 +15,7 @@ pyqt5</br>
 CentOS Linux release 7.3.1611 (terminal)
 1. Install Anaconda</br>
 ```
-$ yum install wget git
+$ yum install wget git  ##安装git和wget程序
 $ mkdir /home/software
 $ cd /home/software
 $ wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh
