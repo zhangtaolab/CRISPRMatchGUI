@@ -23,7 +23,7 @@ $ bash Anaconda3-5.0.1-Linux-x86_64.sh  ##用bash命令安装conda
 ```
 2. Install required packages  ##利用conda安装所有依赖包（建议用清华软件源镜像替换，缩短安装时间）
 ```
-$ conda install bwa \  
+$ conda install bwa \             ##用\符号和回车分隔多个软件
                 samtools \  
                 pyqt=5.6 \  
                 flash \ 
