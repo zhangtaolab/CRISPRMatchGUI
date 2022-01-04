@@ -9,7 +9,7 @@ samtools</br>
 FLASH</br>
 pyqt5</br>
 
-**<font color=red>Note:</font>** Using `Anaconda` to Install all packages (`bwa,samtools,picard,FLASH`) ##应用conda统一安装即可，方便快捷
+**<font color="red">Note:</font>** Using `Anaconda` to Install all packages (`bwa,samtools,picard,FLASH`) ##应用conda统一安装即可，方便快捷
 
 ## II. <u>Manually Install（手动安装，非虚拟机）</u>
 CentOS Linux release 7.3.1611 (terminal)
@@ -23,7 +23,7 @@ $ bash Anaconda3-5.0.1-Linux-x86_64.sh  ##用bash命令安装conda
 ```
 2. Install required packages  ##利用conda安装所有依赖包（建议用清华软件源镜像替换，缩短安装时间）
 ```
-$ conda install bwa \  
+$ conda install bwa \             ##用\符号和回车分隔多个软件
                 samtools \  
                 pyqt=5.6 \  
                 flash \ 
@@ -46,7 +46,7 @@ $ python3 /home/software/CRISPRMatchGUI/start.py  ##使用python3打开软件包
 ## III. <u>Start running（运行方法）</u>
 1. Video manual(用户手册)</br>
 
-(1)CRISPRMatch虚拟机使用教程
+- (1)CRISPRMatch虚拟机使用教程
 - Link: https://v.youku.com/v_show/id_XMzgwODc4ODQ2NA==.html?spm=a2h3j.8428770.3416059.1
 
 (2)双端测序数据合并教程
