@@ -9,7 +9,7 @@ samtools</br>
 FLASH</br>
 pyqt5</br>
 
-![#f03c15] **<font color=red>Note:</font>** Using `Anaconda` to Install all packages (`bwa,samtools,picard,FLASH`) ##应用conda统一安装即可，方便快捷
+**<font color=red>Note:</font>** Using `Anaconda` to Install all packages (`bwa,samtools,picard,FLASH`) ##应用conda统一安装即可，方便快捷
 
 ## II. <u>Manually Install（手动安装，非虚拟机）</u>
 CentOS Linux release 7.3.1611 (terminal)
