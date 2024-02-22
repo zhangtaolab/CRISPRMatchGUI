@@ -1,4 +1,6 @@
 # CRISPRMatchGUI
+## CRISPRMatch is no longer actively maintained.
+## We release new CRIPSR data analysis software: [CrisprStitch](https://zhangtaolab.org/software/crisprstitch) .
 ## Brief introduction
 The Graphical User Interface(GUI) for CRISPRMatch--An automatic calculation and visualization tool for high-throughput CRISPR genome-editing data analysis
 ## I. <u>Requirements(软件所需依赖包)</u>
